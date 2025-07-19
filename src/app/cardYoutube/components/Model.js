@@ -1,13 +1,15 @@
-import { useState, useContext , useEffect } from 'react';
+'use client';
+import { useState, useContext, useEffect } from 'react';
 import { TaskContext } from './contextTask';
 import Toast from './Toast';
 
-const Model = ({ openModel, setOpenModel ,editTask , setEditTask }) => {
+const Model = ({ openModel, setOpenModel, editTask, setEditTask }) => {
+  console.log(editTask);
   const [inputValue, setInputValue] = useState({
     titleTask: '',
     descrepTask: '',
   });
-  
+
   useEffect(() => {
     if (editTask) {
       setInputValue({
@@ -18,13 +20,25 @@ const Model = ({ openModel, setOpenModel ,editTask , setEditTask }) => {
   }, [editTask]);
   const { task, setTask } = useContext(TaskContext);
   const [showToast, setShowToast] = useState(false);
-  const handlSubmit = () => {
-    if (!inputValue.titleTask.trim()) return;
-    setOpenModel(false);
-    setInputValue({ titleTask: '', descrepTask: '' });
+const handlSubmit = () => {
+  if (!inputValue.titleTask.trim()) return;
+
+  setOpenModel(false);
+
+  if (editTask && editTask.id) {
+    const updatedTasks = task.map((t) =>
+      t.id === editTask.id ? { ...t, ...inputValue } : t
+    );
+    setTask(updatedTasks);
+    setEditTask(null);
+  } else {
     setTask([...task, { ...inputValue, id: Date.now() }]);
-    setShowToast(true);
-  };
+  }
+
+  setInputValue({ titleTask: '', descrepTask: '' });
+  setShowToast(true); // ✅ بعد كل التعديلات
+};
+
   return (
     <div>
       <dialog
@@ -50,7 +64,7 @@ const Model = ({ openModel, setOpenModel ,editTask , setEditTask }) => {
             } p-5 bg-second rounded-md flex flex-col gap-3`}
           >
             <input
-              value={inputValue.titleTask}
+              value={inputValue.titleTask || ''}
               onChange={(e) => {
                 setInputValue({ ...inputValue, titleTask: e.target.value });
               }}
@@ -58,7 +72,7 @@ const Model = ({ openModel, setOpenModel ,editTask , setEditTask }) => {
               placeholder="Title task"
             />
             <input
-              value={inputValue.descrepTask}
+              value={inputValue.descrepTask || ''}
               onChange={(e) => {
                 setInputValue({ ...inputValue, descrepTask: e.target.value });
               }}
@@ -73,7 +87,8 @@ const Model = ({ openModel, setOpenModel ,editTask , setEditTask }) => {
       </dialog>
       {showToast && (
         <Toast
-          massage={'New Task Added.'}
+          color={editTask ? 'success' : 'success'}
+          massage={editTask ? 'Task Updated' : 'New Task Added.'}
           onClose={() => {
             setShowToast(false);
           }}

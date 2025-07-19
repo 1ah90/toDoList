@@ -11,7 +11,6 @@ const ToDoList = () => {
   const handleDelete = (id) => {
     const updateTasks = task.filter((t) => t.id !== id);
     setTask(updateTasks);
-    setOpenModel(true)
   };
 
   // Edit function
@@ -19,7 +18,7 @@ const ToDoList = () => {
   const handleEdit = (id) => {
     const taskChose = task.find((t) => t.id === id);
     setEditTask(taskChose);
-    console.log(taskChose);
+    setOpenModel(true);
   };
 
   return (
@@ -51,7 +50,12 @@ const ToDoList = () => {
         </tbody>
       </table>
       {openModel && (
-        <Model  openModel= {openModel} setOpenModel={setOpenModel} editTask={editTask} setEditTask={setEditTask}/>
+        <Model
+          openModel={openModel}
+          setOpenModel={setOpenModel}
+          editTask={EditTask}
+          setEditTask={setEditTask}
+        />
       )}
     </div>
   );

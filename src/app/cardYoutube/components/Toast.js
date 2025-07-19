@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const Toast = ({ massage, onClose }) => {
+const Toast = ({ massage, onClose ,color }) => {
   const [show, setShow] = useState(true);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -11,7 +11,7 @@ const Toast = ({ massage, onClose }) => {
 
   return (
     <div className={`toast toast-start z-50`}>
-      <div className="alert alert-info bg-success">
+      <div className={`alert alert-info bg-${color}`}>
         <span>{massage}</span>
       </div>
     </div>
